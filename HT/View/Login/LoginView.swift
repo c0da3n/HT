@@ -25,7 +25,7 @@ struct LoginView: View {
                             .resizable()
                             .frame(width: 18, height: 18)
                         Spacer()
-                    }.padding(.leading, 90)
+                    }.padding(.leading, 80)
                     HStack {
                         Text("구글 계정으로 로그인")
                             .font(.PretendardSemiBold16)
