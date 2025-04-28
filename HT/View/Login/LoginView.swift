@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct LoginView: View {
+    
     var body: some View {
         Header(title: "로그인")
         VStack(spacing:20){
-            InputBox(title: "이메일", placeholder: "이메일을 입력해주세요", imageName: "email", isSecure: false)
+            InputBox(title: "이메일", placeholder: "이메일을 입력해주세요", imageName: "email")
             InputBox(title: "비밀번호", placeholder: "비밀번호를 입력해주세요", imageName: "password", isSecure: true)
             VStack(spacing: 10){
                 SubmitButton(title: "로그인")
@@ -38,7 +39,7 @@ struct LoginView: View {
                         )
                 }
             }.padding(.top, 40)
-        }.padding(.horizontal, 20)
+        }.padding(.horizontal, 20).navigationBarHidden(true)
         Spacer()
         HStack{
             Text("아직 회원이 아니신가요?")
@@ -49,7 +50,7 @@ struct LoginView: View {
                     .font(.PretendardMedium14)
                     .foregroundStyle(.accent)
             }
-        }.navigationBarHidden(true)
+        }
     }
 }
 

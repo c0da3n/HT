@@ -5,16 +5,22 @@
 //  Created by Jungi Min on 4/27/25.
 //
 
+// InputBox.swift
+
 import SwiftUI
 
 struct InputBox: View {
     @State private var email: String = ""
+    @State private var password: String = ""
+    @State private var userName: String = ""
     @State private var isPasswordVisible: Bool = false
     @FocusState private var isFocused: Bool
+    
     
     private var currentImageName: String {
         imageName.focusedImageName(isFocused: isFocused)
     }
+    
     private var currentVisibilityIconNmae: String {
         (isPasswordVisible ? "visible" : "invisible").focusedImageName(isFocused: isFocused)
     }
@@ -22,7 +28,12 @@ struct InputBox: View {
     var title: String
     var placeholder: String
     var imageName: String
-    var isSecure: Bool
+    var isSecure: Bool = false
+    var isUserField: Bool = false
+    
+    @State private var emailError: String?
+    @State private var passwordError: String?
+    @State private var userNameError: String?
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -39,16 +50,22 @@ struct InputBox: View {
                 if isSecure {
                     Group {
                         if isPasswordVisible {
-                            TextField(placeholder, text: $email)
+                            TextField(placeholder, text: $password)
                                 .focused($isFocused)
                                 .font(.PretendardRegular14)
                                 .foregroundStyle(.grayRegular14)
                                 .textInputAutocapitalization(.never)
+                                .onChange(of: password) { oldVlaue, newValue in
+                                    passwordError = newValue.isValidPassword ? nil : "Password must be between 6 and 14 characters, with at least one uppercase letter and one special character."
+                                }
                         } else {
-                            SecureField(placeholder, text: $email)
+                            SecureField(placeholder, text: $password)
                                 .focused($isFocused)
                                 .font(.PretendardRegular14)
                                 .foregroundStyle(.grayRegular14)
+                                .onChange(of: password) { oldValue, newValue in
+                                    passwordError = newValue.isValidPassword ? nil : "Password must be between 6 and 14 characters, with at least one uppercase letter and one special character."
+                                }
                         }
                     }
                     
@@ -62,11 +79,25 @@ struct InputBox: View {
                             .foregroundStyle(.grayStrongRegular14)
                     }.buttonStyle(.plain).focused($isFocused)
                 } else {
-                    TextField(placeholder, text: $email)
-                        .focused($isFocused)
-                        .font(.PretendardRegular14)
-                        .foregroundStyle(.grayRegular14)
-                        .textInputAutocapitalization(.never)
+                    if isUserField { // 사용자 이름 필드일 경우
+                        TextField(placeholder, text: $userName)
+                            .focused($isFocused)
+                            .font(.PretendardRegular14)
+                            .foregroundStyle(.grayRegular14)
+                            .textInputAutocapitalization(.never)
+                            .onChange(of: userName) { oldVlaue, newValue in
+                                userNameError = newValue.isValidUserName ? nil : "Name must be at least 4 characters long and contain only English letters."
+                            }
+                    } else {
+                        TextField(placeholder, text: $email)
+                            .focused($isFocused)
+                            .font(.PretendardRegular14)
+                            .foregroundStyle(.grayRegular14)
+                            .textInputAutocapitalization(.never)
+                            .onChange(of: email) { oldVlaue, newValue in
+                                emailError = newValue.isValidEmail ? nil : "Invalid email format."
+                            }
+                    }
                 }
             }
             .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
@@ -75,6 +106,28 @@ struct InputBox: View {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(isFocused ? Color.accent: .grayStrongRegular14, lineWidth: 1)
             )
+            
+            // 에러 메시지 표시
+            if let emailError = emailError {
+                Text(emailError)
+                    .font(.PretendardRegular14)
+                    .foregroundStyle(.red)
+                    .padding(.leading, 8)
+            }
+            
+            if let passwordError = passwordError {
+                Text(passwordError)
+                    .font(.PretendardRegular14)
+                    .foregroundStyle(.red)
+                    .padding(.leading, 8)
+            }
+            
+            if let userNameError = userNameError { // 사용자 이름 에러 표시
+                Text(userNameError)
+                    .font(.PretendardRegular14)
+                    .foregroundStyle(.red)
+                    .padding(.leading, 8)
+            }
         }
         .padding(.top, 8)
     }
