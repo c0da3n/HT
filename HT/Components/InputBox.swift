@@ -10,7 +10,15 @@ import SwiftUI
 struct InputBox: View {
     @State private var email: String = ""
     @State private var isPasswordVisible: Bool = false
+    @FocusState private var isFocused: Bool
     
+    private var currentImageName: String {
+        imageName.focusedImageName(isFocused: isFocused)
+    }
+    private var currentVisibilityIconNmae: String {
+        (isPasswordVisible ? "visible" : "invisible").focusedImageName(isFocused: isFocused)
+    }
+
     var title: String
     var placeholder: String
     var imageName: String
@@ -24,7 +32,7 @@ struct InputBox: View {
                 .padding(.leading, 8)
             
             HStack(alignment: .center) {
-                Image(imageName)
+                Image(currentImageName)
                     .resizable()
                     .frame(width: 24, height: 24)
                 
@@ -32,11 +40,13 @@ struct InputBox: View {
                     Group {
                         if isPasswordVisible {
                             TextField(placeholder, text: $email)
+                                .focused($isFocused)
                                 .font(.PretendardRegular14)
                                 .foregroundStyle(.grayRegular14)
                                 .textInputAutocapitalization(.never)
                         } else {
                             SecureField(placeholder, text: $email)
+                                .focused($isFocused)
                                 .font(.PretendardRegular14)
                                 .foregroundStyle(.grayRegular14)
                         }
@@ -44,23 +54,26 @@ struct InputBox: View {
                     
                     Button(action: {
                         isPasswordVisible.toggle()
+                        isFocused=true
                     }) {
-                        Image(isPasswordVisible ? "visible" : "invisible")
+                        Image(currentVisibilityIconNmae)
                             .resizable()
                             .frame(width: 22, height: 22)
                             .foregroundStyle(.grayStrongRegular14)
-                    }
+                    }.buttonStyle(.plain).focused($isFocused)
                 } else {
                     TextField(placeholder, text: $email)
+                        .focused($isFocused)
                         .font(.PretendardRegular14)
                         .foregroundStyle(.grayRegular14)
                         .textInputAutocapitalization(.never)
                 }
             }
             .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
+            .background(isFocused ? Color.accent.opacity(0.1) : .white)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(.grayStrongRegular14, lineWidth: 1)
+                    .stroke(isFocused ? Color.accent: .grayStrongRegular14, lineWidth: 1)
             )
         }
         .padding(.top, 8)
