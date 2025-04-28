@@ -34,6 +34,7 @@ struct InputBox: View {
                             TextField(placeholder, text: $email)
                                 .font(.PretendardRegular14)
                                 .foregroundStyle(.grayRegular14)
+                                .textInputAutocapitalization(.never)
                         } else {
                             SecureField(placeholder, text: $email)
                                 .font(.PretendardRegular14)
@@ -53,6 +54,7 @@ struct InputBox: View {
                     TextField(placeholder, text: $email)
                         .font(.PretendardRegular14)
                         .foregroundStyle(.grayRegular14)
+                        .textInputAutocapitalization(.never)
                 }
             }
             .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
